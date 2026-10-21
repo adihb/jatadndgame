@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>JATA NEGARA</title>
+    <title>SOALAN JATA NEGARA</title>
     <style>
         :root {
             --primary-color: #ffeb3b;
@@ -224,6 +224,14 @@
             gap: 15px;
         }
 
+		.instruction-text {
+			text-align: center;
+			font-size: 14px;
+			font-weight: bold;
+			color: #555;
+			margin-bottom: 8px;
+		}
+
         #btn-semak { background: #4caf50; color: white; border: none; padding: 12px 25px; border-radius: 10px; font-weight: bold; font-size: 16px; }
         #btn-reset { background: #f44336; color: white; border: none; padding: 12px 20px; border-radius: 10px; font-weight: bold; }
     </style>
@@ -260,7 +268,9 @@
             <div class="drop-zone" id="zone-5" data-correct="Bunga kebangsaan"></div>
         </div>
     </div>
-
+	<div class="instruction-text">
+    Sila tekan dan gerakkan jawapan ke kotak kosong diatas
+	</div>
     <div id="answer-section">
         <div class="draggable" id="ans-1" data-val="Kepala">Perpaduan 13 buah negeri dan Kerajaan Persekutuan</div>
         <div class="draggable" id="ans-2" data-val="Tangan">Mewakili negeri-negeri Melayu Tidak Bersekutu</div>
