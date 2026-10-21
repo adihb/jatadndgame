@@ -1,463 +1,695 @@
 <!DOCTYPE html>
 <html lang="ms">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SOALAN JATA NEGARA</title>
-    <style>
-        :root {
-            --primary-color: #ffeb3b;
-            --box-border: #333;
-            --correct-color: #4caf50;
-            --incorrect-color: #f44336;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0b1f6b">
+<title>JATA NEGARA</title>
+<style>
+:root {
+    --navy: #0b1f6b;
+    --navy-d: #071548;
+    --gold: #ffcc00;
+    --gold-d: #e0a800;
+    --ink: #1b2340;
+    --muted: #5a6488;
+    --ok: #2e9e57;
+    --ok-bg: #d9f4e3;
+    --bad: #d93a3a;
+    --bad-bg: #fde0e0;
+    --bg: #eef3fb;
+}
 
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Arial', sans-serif;
-            background-color: #e3f2fd;
-            /* Memastikan kandungan sentiasa di tengah skrin */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-            touch-action: none;
-            user-select: none;
-        }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-        /* Skrin Mula - Kotak Nama & Kelas */
-        #entry-screen {
-            background: white;
-            padding: 40px 30px;
-            border-radius: 25px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-            text-align: center;
-            z-index: 100;
-            width: 85%;
-            max-width: 320px;
-            /* Susunan input di dalam kotak */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+html, body { margin: 0; height: 100%; }
 
-        #entry-screen h2 { 
-            margin-top: 0; 
-            color: #1976d2; 
-            font-size: 28px;
-        }
+body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    background: linear-gradient(160deg, var(--navy-d), #1b3a9c);
+    color: var(--ink);
+    overflow: hidden;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
 
-        input {
-            width: 100%;
-            padding: 15px;
-            margin: 10px 0;
-            border: 2px solid #ddd;
-            border-radius: 12px;
-            box-sizing: border-box;
-            font-size: 16px;
-            outline: none;
-			text-transform: uppercase; /* Paksa paparan huruf besar */
-        }
+/* ---------- SKRIN MULA ---------- */
+#entry-screen {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
 
-        input:focus {
-            border-color: #1976d2;
-        }
+.entry-card {
+    width: 100%;
+    max-width: 340px;
+    background: #fff;
+    border-radius: 24px;
+    padding: 0 26px 28px;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, .35);
+    overflow: hidden;
+}
 
-        #btn-start {
-            background: #1976d2;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 12px;
-            font-weight: bold;
-            font-size: 18px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 15px;
-            transition: transform 0.2s;
-        }
+.entry-card::before {
+    content: "";
+    display: block;
+    height: 8px;
+    margin: 0 -26px 24px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-d));
+}
 
-        #btn-start:active {
-            transform: scale(0.95);
-        }
+.entry-card h1 {
+    margin: 0;
+    font-size: 30px;
+    letter-spacing: 1.5px;
+    color: var(--navy);
+}
 
-        /* Skrin Game */
-        #game-screen {
-            display: none;
-            width: 100vw;
-            height: 100vh;
-            height: 100dvh;
-            flex-direction: column;
-            align-items: center;
-            overflow: hidden;
-        }
+.entry-card p {
+    margin: 6px 0 20px;
+    font-size: 14px;
+    color: var(--muted);
+}
 
-        #info-bar {
-            width: 100%;
-            box-sizing: border-box;
-            padding: 10px 8px;
-            background: white;
-            display: flex;
-            justify-content: space-around;
-            gap: 8px;
-            font-weight: bold;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            font-size: clamp(11px, 2.5vw, 14px);
-            color: #333;
-            flex-shrink: 0;
-        }
+input {
+    width: 100%;
+    padding: 14px 16px;
+    margin: 6px 0;
+    border: 2px solid #d8def0;
+    border-radius: 14px;
+    font-size: 16px;
+    outline: none;
+    text-transform: uppercase;
+    background: #f7f9ff;
+    user-select: text;
+    -webkit-user-select: text;
+    transition: border-color .2s, background .2s;
+}
 
-        #image-section {
-            position: relative;
-            flex: 1;
-            min-height: 0;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-			
-        }
+input:focus { border-color: var(--navy); background: #fff; }
+input.err { border-color: var(--bad); background: var(--bad-bg); }
 
-        /* Bekas gambar: semua kotak berpandukan saiz bekas ini */
-        .image-container {
-            position: relative;
-            flex: 0 0 auto;
-            max-width: 96%;
-            max-height: 96%;
-			transform: translateY(-10px);
-        }
+button { font-family: inherit; cursor: pointer; border: 0; }
 
-        #body-image {
-            display: block;
-            width: 100%;
-            height: 100%;
-            object-fit: fill;
-            pointer-events: none;
-            user-select: none;
-        }
+#btn-start {
+    width: 100%;
+    margin-top: 16px;
+    padding: 15px;
+    border-radius: 14px;
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: .5px;
+    color: var(--navy-d);
+    background: linear-gradient(180deg, var(--gold), var(--gold-d));
+    box-shadow: 0 5px 0 #b88a00;
+    transition: transform .1s, box-shadow .1s;
+}
 
-        .drop-zone {
-            position: absolute;
-            width: 34%;
-            min-height: 36px;
-            height: auto;
-            aspect-ratio: 4 / 1;
-            box-sizing: border-box;
-            border: 2px dashed var(--box-border);
-            background: rgba(255, 255, 255, 0.78);
-            border-radius: 8px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            font-size: clamp(9px, 2.1vw, 15px);
-            line-height: 1.1;
-            padding: 2px;
-            overflow-wrap: anywhere;
-            z-index: 5;
-            text-align: center;
-            transform: translate(-50%, -50%);
-            transition: background-color 0.2s, border-color 0.2s;
-        }
+#btn-start:active { transform: translateY(4px); box-shadow: 0 1px 0 #b88a00; }
 
-        .drop-zone::after {
-			display: none;
-        }
+/* ---------- SKRIN GAME ---------- */
+#game-screen {
+    position: fixed;
+    inset: 0;
+    display: none;
+    grid-template-rows: auto 1fr auto;
+    background: var(--bg);
+}
 
-        .drop-zone.correct {
-            border-color: var(--correct-color);
-            background: #c8e6c9;
-            border-style: solid;
-        }
+#topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: calc(10px + env(safe-area-inset-top)) 14px 10px;
+    background: var(--navy);
+    color: #fff;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, .25);
+    z-index: 5;
+}
 
-        .drop-zone.incorrect {
-            border-color: var(--incorrect-color);
-            background: #ffcdd2;
-            border-style: solid;
-        }
+#topbar .brand {
+    font-weight: 800;
+    letter-spacing: 1px;
+    font-size: 15px;
+    color: var(--gold);
+    white-space: nowrap;
+}
 
-        /* Kedudukan relatif kepada gambar, bukan seluruh skrin */
-        #zone-1 { top: 20%; left: 23%; }
-        #zone-2 { top: 51%; left: 6%; }
-        #zone-3 { top: 25%; left: 88%; }
-        #zone-4 { top: 51%; left: 96%; }
-        #zone-5 { top: 85%; left: 48%; }
+#topbar .who {
+    min-width: 0;
+    text-align: right;
+    line-height: 1.2;
+}
 
-        #answer-section {
-            width: 100%;
-            min-height: 100px;
-            height: 300px;
-            box-sizing: border-box;
-            flex-shrink: 0;
-            background: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            padding: 10px;
-            box-shadow: 0 -5px 10px rgba(0,0,0,0.1);
-            flex-wrap: wrap;
-            z-index: 10;
-        }
+#display-nama {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
-        .draggable {
-            padding: 10px 15px;
-            background-color: var(--primary-color);
-            border: 2px solid #fbc02d;
-            border-radius: 20px;
-            font-weight: bold;
-			font-size: 16px;
-            touch-action: none;
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
-            cursor: grab;
-        }
+#display-kelas {
+    display: block;
+    font-size: 11px;
+    opacity: .8;
+}
 
-        #controls {
-            width: 100%;
-            padding: 15px;
-            display: flex;
-            justify-content: center;
-            background: white;
-            gap: 15px;
-        }
+#image-section {
+    min-height: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px;
+    overflow: hidden;
+}
 
-		.instruction-text {
-			text-align: center;
-			font-size: 14px;
-			font-weight: bold;
-			color: #555;
-			margin-bottom: 8px;
-		}
+.image-container {
+    position: relative;
+    flex: 0 0 auto;
+    container-type: inline-size;   /* supaya font kotak ikut saiz gambar */
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(11, 31, 107, .15);
+}
 
-        #btn-semak { background: #4caf50; color: white; border: none; padding: 12px 25px; border-radius: 10px; font-weight: bold; font-size: 16px; }
-        #btn-reset { background: #f44336; color: white; border: none; padding: 12px 20px; border-radius: 10px; font-weight: bold; }
-    </style>
+#body-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    pointer-events: none;
+    border-radius: 16px;
+}
+
+/* ---------- KOTAK JAWAPAN ---------- */
+.drop-zone {
+    --w: 34%;
+    position: absolute;
+    width: var(--w);
+    aspect-ratio: 2 / 1;
+    /* clamp: kotak tak akan terkeluar dari gambar */
+    left: clamp(calc(var(--w) / 2), var(--x), calc(100% - var(--w) / 2));
+    top: var(--y);
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3px 5px;
+    border: 2px dashed rgba(11, 31, 107, .55);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, .9);
+    color: var(--navy);
+    font-size: 11px;
+    font-size: 3.4cqw;
+    font-weight: 700;
+    line-height: 1.15;
+    text-align: center;
+    text-wrap: balance;
+    overflow: hidden;
+    z-index: 5;
+    transition: background-color .15s, border-color .15s, box-shadow .15s;
+}
+
+.drop-zone:empty::before {
+    content: "?";
+    font-size: 5.5cqw;
+    opacity: .35;
+}
+
+.drop-zone:not(:empty) {
+    border-style: solid;
+    border-color: var(--navy);
+    background: #fff;
+    cursor: pointer;
+}
+
+.drop-zone.hover {
+    border-color: var(--gold-d);
+    background: #fff6cc;
+    box-shadow: 0 0 0 4px rgba(255, 204, 0, .45);
+}
+
+.drop-zone.correct { border-color: var(--ok); background: var(--ok-bg); }
+.drop-zone.incorrect { border-color: var(--bad); background: var(--bad-bg); }
+
+/* Kedudukan pusat kotak (% daripada gambar).
+   Ubah di sini kalau nak alih kotak. */
+#zone-1 { --x: 23%; --y: 22%; }
+#zone-3 { --x: 77%; --y: 22%; }
+#zone-2 { --x: 17%; --y: 51%; }
+#zone-4 { --x: 83%; --y: 51%; }
+#zone-5 { --x: 50%; --y: 85%; }
+
+/* ---------- PANEL BAWAH ---------- */
+#tray {
+    background: #fff;
+    border-radius: 22px 22px 0 0;
+    box-shadow: 0 -6px 20px rgba(11, 31, 107, .14);
+    padding: 12px 12px calc(12px + env(safe-area-inset-bottom));
+    z-index: 6;
+}
+
+.tray-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+#progress {
+    background: var(--navy);
+    color: #fff;
+    border-radius: 99px;
+    padding: 2px 10px;
+}
+
+#chips {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.chip {
+    min-height: 46px;
+    padding: 8px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 12.5px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--navy-d);
+    background: linear-gradient(180deg, #ffe26a, var(--gold));
+    border: 2px solid var(--gold-d);
+    border-radius: 14px;
+    box-shadow: 0 3px 0 #b88a00;
+    touch-action: none;
+    cursor: grab;
+}
+
+.chip:last-child:nth-child(odd) { grid-column: 1 / -1; }
+
+/* Jawapan yang dah diletakkan: tinggal slot kosong (susunan tak berubah) */
+.chip.placed {
+    background: transparent;
+    border: 2px dashed #cfd6ea;
+    color: transparent;
+    box-shadow: none;
+    pointer-events: none;
+}
+
+.chip.lifted { opacity: .3; }
+
+.chip.ghost {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    pointer-events: none;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, .3);
+    opacity: 1;
+}
+
+#controls {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+#btn-reset, #btn-semak {
+    height: 48px;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: .5px;
+    transition: transform .1s;
+}
+
+#btn-reset { background: #eceff8; color: var(--navy); }
+#btn-semak { background: var(--ok); color: #fff; box-shadow: 0 4px 0 #1f7a42; }
+#btn-reset:active, #btn-semak:active { transform: translateY(2px); }
+
+/* ---------- TOAST & KEPUTUSAN ---------- */
+#toast {
+    position: fixed;
+    left: 50%;
+    bottom: 40%;
+    transform: translate(-50%, 10px);
+    background: rgba(27, 35, 64, .92);
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 99px;
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s, transform .25s;
+    z-index: 2000;
+    white-space: nowrap;
+}
+
+#toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+#result {
+    position: fixed;
+    inset: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+    background: rgba(7, 21, 72, .6);
+    z-index: 3000;
+}
+
+#result.show { display: flex; }
+
+.result-card {
+    width: 100%;
+    max-width: 320px;
+    padding: 28px 22px 22px;
+    background: #fff;
+    border-radius: 24px;
+    text-align: center;
+    animation: pop .3s ease-out;
+}
+
+@keyframes pop {
+    from { transform: scale(.85); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.result-card .emoji { font-size: 52px; line-height: 1; }
+.result-card h2 { margin: 10px 0 2px; font-size: 22px; color: var(--navy); }
+.result-card .score { font-size: 44px; font-weight: 800; color: var(--navy); }
+.result-card .score small { font-size: 22px; color: var(--muted); }
+.result-card p { margin: 4px 0 18px; color: var(--muted); font-size: 14px; }
+
+.result-card .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.result-card button {
+    height: 46px;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 14px;
+}
+#res-close { background: #eceff8; color: var(--navy); }
+#res-again { background: var(--navy); color: #fff; }
+</style>
 </head>
 <body>
 
-<!-- SKRIN MULA (Pusat Skrin) -->
+<!-- SKRIN MULA -->
 <div id="entry-screen">
-    <h2>SOALAN JATA NEGARA</h2>
-    <input type="text" id="input-nama" placeholder="Nama Murid">
-    <input type="text" id="input-kelas" placeholder="Kelas">
-    <button id="btn-start" onclick="startGame()">MULA SOALAN</button>
+    <div class="entry-card">
+        <h1>JATA NEGARA</h1>
+        <p>Isi maklumat untuk mula menjawab</p>
+        <input type="text" id="input-nama" placeholder="Nama Murid" autocomplete="off">
+        <input type="text" id="input-kelas" placeholder="Kelas" autocomplete="off">
+        <button id="btn-start">MULA SOALAN</button>
+    </div>
 </div>
 
 <!-- SKRIN GAME -->
 <div id="game-screen">
-    <div id="info-bar">
-        <span>Nama: <span id="display-nama">-</span></span>
-        <span>Kelas: <span id="display-kelas">-</span></span>
-    </div>
-
-    <div id="controls">
-        <button id="btn-semak" onclick="checkAnswers()">SEMAK</button>
-        <button id="btn-reset" onclick="resetGame()">RESET</button>
-    </div>
+    <header id="topbar">
+        <div class="brand">JATA NEGARA</div>
+        <div class="who">
+            <span id="display-nama">-</span>
+            <span id="display-kelas">-</span>
+        </div>
+    </header>
 
     <div id="image-section">
         <div class="image-container" id="image-container">
             <img id="body-image" src="https://i.postimg.cc/44qR3TLs/JATA-NEGARA-00000.png" alt="Jata Negara">
-            <div class="drop-zone" id="zone-1" data-correct="Perpaduan 13 buah negeri dan Kerajaan Persekutuan"></div>
-            <div class="drop-zone" id="zone-2" data-correct="Mewakili negeri-negeri Melayu Tidak Bersekutu"></div>
-            <div class="drop-zone" id="zone-3" data-correct="Mewakili negeri-negeri Melayu Bersekutu"></div>
-            <div class="drop-zone" id="zone-4" data-correct="Mewakili negeri Melaka"></div>
-            <div class="drop-zone" id="zone-5" data-correct="Bunga kebangsaan"></div>
+            <div class="drop-zone" id="zone-1" data-answer="ans-1"></div>
+            <div class="drop-zone" id="zone-2" data-answer="ans-2"></div>
+            <div class="drop-zone" id="zone-3" data-answer="ans-4"></div>
+            <div class="drop-zone" id="zone-4" data-answer="ans-3"></div>
+            <div class="drop-zone" id="zone-5" data-answer="ans-5"></div>
         </div>
     </div>
-	<div class="instruction-text">
-    Gerakkan jawapan ke kotak kosong diatas
-	</div>
-    <div id="answer-section">
-        <div class="draggable" id="ans-1" data-val="Kepala">Perpaduan 13 buah negeri dan Kerajaan Persekutuan</div>
-        <div class="draggable" id="ans-2" data-val="Tangan">Mewakili negeri-negeri Melayu Tidak Bersekutu</div>
-        <div class="draggable" id="ans-3" data-val="Kaki">Mewakili negeri Melaka</div>
-        <div class="draggable" id="ans-4" data-val="Kaki">Mewakili negeri-negeri Melayu Bersekutu</div>
-        <div class="draggable" id="ans-5" data-val="Tangan">Bunga kebangsaan</div>
-    </div>
 
+    <section id="tray">
+        <div class="tray-head">
+            <span>Tekan &amp; seret jawapan ke kotak di gambar</span>
+            <span id="progress">0 / 5</span>
+        </div>
+        <div id="chips">
+            <div class="chip" id="ans-1">Perpaduan 13 buah negeri dan Kerajaan Persekutuan</div>
+            <div class="chip" id="ans-2">Mewakili negeri-negeri Melayu Tidak Bersekutu</div>
+            <div class="chip" id="ans-3">Mewakili negeri Melaka</div>
+            <div class="chip" id="ans-4">Mewakili negeri-negeri Melayu Bersekutu</div>
+            <div class="chip" id="ans-5">Bunga kebangsaan</div>
+        </div>
+        <div id="controls">
+            <button id="btn-reset">RESET</button>
+            <button id="btn-semak">SEMAK</button>
+        </div>
+    </section>
+</div>
+
+<div id="toast"></div>
+
+<div id="result">
+    <div class="result-card">
+        <div class="emoji" id="res-emoji">🎉</div>
+        <h2 id="res-title">Hebat!</h2>
+        <div class="score"><span id="res-score">0</span><small> / 5</small></div>
+        <p id="res-msg"></p>
+        <div class="row">
+            <button id="res-close">TUTUP</button>
+            <button id="res-again">MAIN SEMULA</button>
+        </div>
+    </div>
 </div>
 
 <script>
-    let activeElement = null;
-    let offsetX = 0;
-    let offsetY = 0;
+const $ = id => document.getElementById(id);
+const bodyImage = $('body-image');
+const imageContainer = $('image-container');
+const imageSection = $('image-section');
+const chipsBox = $('chips');
+const zones = [...document.querySelectorAll('.drop-zone')];
+const chips = [...document.querySelectorAll('.chip')];
 
-    // Saizkan bekas mengikut nisbah gambar sebenar dan ruang skrin yang tersedia.
-    const bodyImage = document.getElementById('body-image');
-    const imageContainer = document.getElementById('image-container');
-    const imageSection = document.getElementById('image-section');
+/* ---------- Saiz gambar ikut nisbah sebenar ---------- */
+function fitImageContainer() {
+    const nw = bodyImage.naturalWidth || 3;
+    const nh = bodyImage.naturalHeight || 4;
+    const aw = imageSection.clientWidth - 16;
+    const ah = imageSection.clientHeight - 16;
+    if (aw <= 0 || ah <= 0) return;
+    const scale = Math.min(aw / nw, ah / nh);
+    imageContainer.style.width = Math.max(1, nw * scale) + 'px';
+    imageContainer.style.height = Math.max(1, nh * scale) + 'px';
+}
 
-    function fitImageContainer() {
-        if (!bodyImage || !imageContainer || !imageSection) return;
-        const naturalWidth = bodyImage.naturalWidth || 3;
-        const naturalHeight = bodyImage.naturalHeight || 4;
-        const availableWidth = imageSection.clientWidth * 0.96;
-        const availableHeight = imageSection.clientHeight * 0.96;
-        const scale = Math.min(
-            availableWidth / naturalWidth,
-            availableHeight / naturalHeight
-        );
-        imageContainer.style.width = Math.max(1, naturalWidth * scale) + 'px';
-        imageContainer.style.height = Math.max(1, naturalHeight * scale) + 'px';
+if (bodyImage.complete) fitImageContainer();
+else bodyImage.addEventListener('load', fitImageContainer, { once: true });
+window.addEventListener('resize', fitImageContainer);
+if ('ResizeObserver' in window) new ResizeObserver(fitImageContainer).observe(imageSection);
+
+/* ---------- Skrin mula ---------- */
+function startGame() {
+    const namaEl = $('input-nama');
+    const kelasEl = $('input-kelas');
+    const nama = namaEl.value.trim().toUpperCase();
+    const kelas = kelasEl.value.trim().toUpperCase();
+
+    namaEl.classList.toggle('err', !nama);
+    kelasEl.classList.toggle('err', !kelas);
+    if (!nama || !kelas) {
+        (!nama ? namaEl : kelasEl).focus();
+        return;
     }
 
-    if (bodyImage.complete) {
-        fitImageContainer();
-    } else {
-        bodyImage.addEventListener('load', fitImageContainer, { once: true });
+    $('display-nama').textContent = nama;
+    $('display-kelas').textContent = kelas;
+    $('entry-screen').style.display = 'none';
+    $('game-screen').style.display = 'grid';
+    shuffleChips();
+    requestAnimationFrame(fitImageContainer);
+}
+
+$('btn-start').addEventListener('click', startGame);
+['input-nama', 'input-kelas'].forEach(id => {
+    $(id).addEventListener('input', e => e.target.classList.remove('err'));
+    $(id).addEventListener('keydown', e => { if (e.key === 'Enter') startGame(); });
+});
+
+/* ---------- Susunan jawapan rawak ---------- */
+function shuffleChips() {
+    const arr = [...chips];
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
     }
-    window.addEventListener('resize', fitImageContainer);
-    if ('ResizeObserver' in window && imageSection) {
-        new ResizeObserver(fitImageContainer).observe(imageSection);
+    arr.forEach(c => chipsBox.appendChild(c));
+}
+
+/* ---------- Letak / keluarkan jawapan ---------- */
+function updateProgress() {
+    const n = zones.filter(z => z.dataset.occupiedId).length;
+    $('progress').textContent = n + ' / ' + zones.length;
+}
+
+function release(zone) {
+    const id = zone.dataset.occupiedId;
+    if (id) $(id).classList.remove('placed');
+    zone.textContent = '';
+    delete zone.dataset.occupiedId;
+    zone.classList.remove('correct', 'incorrect', 'hover');
+    updateProgress();
+}
+
+function place(zone, chip) {
+    if (zone.dataset.occupiedId) release(zone);   // jawapan lama balik ke panel
+    zone.textContent = chip.textContent;
+    zone.dataset.occupiedId = chip.id;
+    zone.classList.remove('correct', 'incorrect');
+    chip.classList.add('placed');
+    updateProgress();
+}
+
+// Tekan kotak yang dah berisi = keluarkan jawapan
+zones.forEach(z => z.addEventListener('click', () => {
+    if (z.dataset.occupiedId) release(z);
+}));
+
+/* ---------- Drag & drop (sentuh + tetikus) ---------- */
+let drag = null;
+
+function zoneAt(x, y) {
+    const pad = 10;   // kawasan sentuh dilebarkan sedikit supaya mudah untuk jari
+    return zones.find(z => {
+        const r = z.getBoundingClientRect();
+        return x >= r.left - pad && x <= r.right + pad && y >= r.top - pad && y <= r.bottom + pad;
+    }) || null;
+}
+
+function moveGhost(e) {
+    drag.ghost.style.transform =
+        `translate(${e.clientX - drag.dx}px, ${e.clientY - drag.dy}px) scale(1.04)`;
+    const z = zoneAt(e.clientX, e.clientY);
+    if (z !== drag.zone) {
+        if (drag.zone) drag.zone.classList.remove('hover');
+        if (z) z.classList.add('hover');
+        drag.zone = z;
+    }
+}
+
+function endDrag(e, drop) {
+    if (!drag) return;
+    const { chip, ghost, zone } = drag;
+    chip.removeEventListener('pointermove', onMove);
+    chip.removeEventListener('pointerup', onUp);
+    chip.removeEventListener('pointercancel', onCancel);
+    try { chip.releasePointerCapture(e.pointerId); } catch (_) {}
+    ghost.remove();
+    chip.classList.remove('lifted');
+    if (zone) zone.classList.remove('hover');
+    if (drop && zone) place(zone, chip);
+    drag = null;
+}
+
+function onDown(e) {
+    const chip = e.currentTarget;
+    if (drag || chip.classList.contains('placed')) return;
+    e.preventDefault();
+
+    const r = chip.getBoundingClientRect();
+    const ghost = chip.cloneNode(true);
+    ghost.removeAttribute('id');
+    ghost.classList.add('ghost');
+    ghost.style.width = r.width + 'px';
+    document.body.appendChild(ghost);
+
+    drag = { chip, ghost, dx: e.clientX - r.left, dy: e.clientY - r.top, zone: null };
+    chip.classList.add('lifted');
+    chip.setPointerCapture(e.pointerId);
+    chip.addEventListener('pointermove', onMove);
+    chip.addEventListener('pointerup', onUp);
+    chip.addEventListener('pointercancel', onCancel);
+    moveGhost(e);
+}
+
+function onMove(e) { if (drag) moveGhost(e); }
+function onUp(e) { endDrag(e, true); }
+function onCancel(e) { endDrag(e, false); }
+
+chips.forEach(c => c.addEventListener('pointerdown', onDown));
+
+/* ---------- Semak ---------- */
+let toastTimer;
+function toast(msg) {
+    const t = $('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function checkAnswers() {
+    const filled = zones.filter(z => z.dataset.occupiedId);
+    if (filled.length === 0) {
+        toast('Letakkan jawapan ke dalam kotak dahulu!');
+        return;
     }
 
-    function startGame() {
-		const nama = document.getElementById('input-nama').value.trim().toUpperCase(); 
-		const kelas = document.getElementById('input-kelas').value.trim().toUpperCase();
-
-        if (!nama || !kelas) {
-            alert("Sila isi nama dan kelas!");
-            return;
+    let score = 0;
+    zones.forEach(z => {
+        z.classList.remove('correct', 'incorrect');
+        if (!z.dataset.occupiedId) return;
+        if (z.dataset.occupiedId === z.dataset.answer) {
+            z.classList.add('correct');
+            score++;
+        } else {
+            z.classList.add('incorrect');
         }
-
-        document.getElementById('display-nama').innerText = nama;
-        document.getElementById('display-kelas').innerText = kelas;
-        document.getElementById('entry-screen').style.display = 'none';
-        document.getElementById('game-screen').style.display = 'flex';
-        requestAnimationFrame(fitImageContainer);
-    }
-
-    function resetGame() {
-        // Kosongkan semua kotak dan pulangkan semua jawapan ke bahagian pilihan.
-        dropZones.forEach(zone => {
-            zone.innerText = '';
-            delete zone.dataset.occupiedId;
-            zone.classList.remove('correct', 'incorrect');
-        });
-
-        draggables.forEach(el => {
-            el.style.display = '';
-            resetElementPosition(el);
-            document.getElementById('answer-section').appendChild(el);
-        });
-    }
-
-    const draggables = document.querySelectorAll('.draggable');
-    const dropZones = document.querySelectorAll('.drop-zone');
-
-    draggables.forEach(el => {
-        el.addEventListener('pointerdown', onPointerDown);
     });
 
-    window.addEventListener('pointermove', onPointerMove);
-    window.addEventListener('pointerup', onPointerUp);
+    const total = zones.length;
+    let emoji, title;
+    if (score === total) { emoji = '🎉'; title = 'Hebat!'; }
+    else if (score >= 3) { emoji = '👍'; title = 'Bagus!'; }
+    else { emoji = '💪'; title = 'Cuba lagi!'; }
 
-    function onPointerDown(e) {
-        activeElement = e.target;
-        if (!activeElement.classList.contains('draggable')) return;
+    const kosong = total - filled.length;
+    $('res-emoji').textContent = emoji;
+    // Nama pendek: perkataan pertama sahaja, huruf besar di awal (MARIAM BINTI ALI -> Mariam)
+    const first = $('display-nama').textContent.trim().split(/\s+/)[0] || '';
+    const namaPendek = first.charAt(0).toUpperCase() + first.slice(1).toLowerCase();
+    $('res-title').textContent = title + ' ' + namaPendek;
+    $('res-score').textContent = score;
+    $('res-msg').textContent = kosong > 0
+        ? kosong + ' kotak masih kosong.'
+        : (score === total ? 'Semua jawapan betul.' : 'Kotak merah perlu dibetulkan.');
+    $('result').classList.add('show');
+}
 
-        activeHTML = activeElement;
-        activeElement.classList.add('dragging');
-        const rect = activeElement.getBoundingClientRect();
-        offsetX = e.clientX - rect.left;
-        offsetY = e.clientY - rect.top;
-        
-        activeElement.style.position = 'fixed';
-        activeElement.style.zIndex = '1000';
-        moveAt(e.clientX, e.clientY);
-    }
+function resetGame() {
+    zones.forEach(release);
+    shuffleChips();
+    $('result').classList.remove('show');
+}
 
-    function onPointerMove(e) {
-        if (!activeElement) return;
-        moveAt(e.clientX, e.clientY);
-    }
-
-    function moveAt(x, y) {
-        activeElement.style.left = (x - offsetX) + 'px';
-        activeElement.style.top = (y - offsetY) + 'px';
-    }
-
-    function onPointerUp(e) {
-        if (!activeElement) return;
-
-        activeElement.style.visibility = 'hidden';
-        const dropTarget = document.elementFromPoint(e.clientX, e.clientY);
-        activeElement.style.visibility = 'visible';
-
-        const zone = dropTarget ? dropTarget.closest('.drop-zone') : null;
-
-        if (zone) {
-            // Jika kotak sudah ada jawapan, pulangkan jawapan lama ke ruang pilihan.
-            const previousAnswerId = zone.dataset.occupiedId;
-            if (previousAnswerId) {
-                const previousAnswer = document.getElementById(previousAnswerId);
-                if (previousAnswer) {
-                    previousAnswer.style.display = '';
-                    resetElementPosition(previousAnswer);
-                    document.getElementById('answer-section').appendChild(previousAnswer);
-                }
-            }
-
-            // Letakkan jawapan baharu dalam kotak ini.
-            zone.innerText = activeElement.innerText;
-            zone.dataset.occupiedId = activeElement.id;
-            zone.classList.remove('correct', 'incorrect');
-            activeElement.style.display = 'none';
-        } else {
-            resetElementPosition(activeElement);
-        }
-
-        activeElement.classList.remove('dragging');
-        activeElement = null;
-    }
-
-    function resetElementPosition(el) {
-        el.style.position = 'static';
-        el.style.left = 'auto';
-        el.style.top = 'auto';
-        el.style.zIndex = '10';
-    }
-
-    function checkAnswers() {
-        let score = 0;
-        const totalZones = dropZones.length;
-        let filledZones = 0;
-
-        dropZones.forEach(zone => {
-            const correctVal = (zone.dataset.correct || "").trim();
-            const currentVal = zone.innerText.trim();
-
-            if (currentVal !== "") {
-                filledZones++;
-                const isCorrect = currentVal === correctVal;
-
-                if (isCorrect) {
-                    zone.classList.add('correct');
-                    zone.classList.remove('incorrect');
-                    score++;
-                } else {
-                    zone.classList.add('incorrect');
-                    zone.classList.remove('correct');
-                }
-            } else {
-                zone.classList.remove('correct', 'incorrect');
-            }
-        });
-
-        if (filledZones === 0) {
-            alert("Sila letakkan jawapan ke dalam kotak dahulu!");
-            return;
-        }
-
-        const nama = document.getElementById('display-nama').innerText;
-        const kelas = document.getElementById('display-kelas').innerText;
-        alert(`Keputusan: ${nama} \nSkor: ${score} / ${totalZones}\nStatus: ${score === totalZones ? 'Hebat! 🎉' : 'Cuba lagi! 💪'}`);
-    }
+$('btn-semak').addEventListener('click', checkAnswers);
+$('btn-reset').addEventListener('click', resetGame);
+$('res-close').addEventListener('click', () => $('result').classList.remove('show'));
+$('res-again').addEventListener('click', resetGame);
 </script>
 
 </body>
