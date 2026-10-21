@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>JATA NEGARA</title>
+    <style>
+        :root {
+            --primary-color: #ffeb3b;
+            --box-border: #333;
+            --correct-color: #4caf50;
+            --incorrect-color: #f44336;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #e3f2fd;
+            /* Memastikan kandungan sentiasa di tengah skrin */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            touch-action: none;
+            user-select: none;
+        }
+
+        /* Skrin Mula - Kotak Nama & Kelas */
+        #entry-screen {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            text-align: center;
+            z-index: 100;
+            width: 85%;
+            max-width: 320px;
+            /* Susunan input di dalam kotak */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #entry-screen h2 { 
+            margin-top: 0; 
+            color: #1976d2; 
+            font-size: 28px;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            box-sizing: border-box;
+            font-size: 16px;
+            outline: none;
+			text-transform: uppercase; /* Paksa paparan huruf besar */
+        }
+
+        input:focus {
+            border-color: #1976d2;
+        }
+
+        #btn-start {
+            background: #1976d2;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+            transition: transform 0.2s;
+        }
+
+        #btn-start:active {
+            transform: scale(0.95);
+        }
+
+        /* Skrin Game */
+        #game-screen {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        #info-bar {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px 8px;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            gap: 8px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            font-size: clamp(11px, 2.5vw, 14px);
+            color: #333;
+            flex-shrink: 0;
+        }
+
+        #image-section {
+            position: relative;
+            flex: 1;
+            min-height: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+			
+        }
+
+        /* Bekas gambar: semua kotak berpandukan saiz bekas ini */
+        .image-container {
+            position: relative;
+            flex: 0 0 auto;
+            max-width: 96%;
+            max-height: 96%;
+			transform: translateY(-50px);
+        }
+
+        #body-image {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .drop-zone {
+            position: absolute;
+            width: 34%;
+            min-height: 8%;
+            height: auto;
+            aspect-ratio: 4 / 1;
+            box-sizing: border-box;
+            border: 2px dashed var(--box-border);
+            background: rgba(255, 255, 255, 0.78);
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: clamp(9px, 2.1vw, 15px);
+            line-height: 1.1;
+            padding: 2px;
+            overflow-wrap: anywhere;
+            z-index: 5;
+            text-align: center;
+            transform: translate(-50%, -50%);
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+
+        .drop-zone::after {
+			display: none;
+        }
+
+        .drop-zone.correct {
+            border-color: var(--correct-color);
+            background: #c8e6c9;
+            border-style: solid;
+        }
+
+        .drop-zone.incorrect {
+            border-color: var(--incorrect-color);
+            background: #ffcdd2;
+            border-style: solid;
+        }
+
+        /* Kedudukan relatif kepada gambar, bukan seluruh skrin */
+        #zone-1 { top: 20%; left: 23%; }
+        #zone-2 { top: 51%; left: 6%; }
+        #zone-3 { top: 25%; left: 88%; }
+        #zone-4 { top: 51%; left: 96%; }
+        #zone-5 { top: 85%; left: 48%; }
+
+        #answer-section {
+            width: 100%;
+            min-height: 100px;
+            height: 130px;
+            box-sizing: border-box;
+            flex-shrink: 0;
+            background: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            box-shadow: 0 -5px 10px rgba(0,0,0,0.1);
+            flex-wrap: wrap;
+            z-index: 10;
+        }
+
+        .draggable {
+            padding: 10px 15px;
+            background-color: var(--primary-color);
+            border: 2px solid #fbc02d;
+            border-radius: 20px;
+            font-weight: bold;
+            touch-action: none;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+            cursor: grab;
+        }
+
+        #controls {
+            width: 100%;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            background: white;
+            gap: 15px;
+        }
+
+        #btn-semak { background: #4caf50; color: white; border: none; padding: 12px 25px; border-radius: 10px; font-weight: bold; font-size: 16px; }
+        #btn-reset { background: #f44336; color: white; border: none; padding: 12px 20px; border-radius: 10px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<!-- SKRIN MULA (Pusat Skrin) -->
+<div id="entry-screen">
+    <h2>JATA NEGARA</h2>
+    <input type="text" id="input-nama" placeholder="Nama Murid">
+    <input type="text" id="input-kelas" placeholder="Kelas">
+    <button id="btn-start" onclick="startGame()">MULA SOALAN</button>
+</div>
+
+<!-- SKRIN GAME -->
+<div id="game-screen">
+    <div id="info-bar">
+        <span>Nama: <span id="display-nama">-</span></span>
+        <span>Kelas: <span id="display-kelas">-</span></span>
+    </div>
+
+    <div id="controls">
+        <button id="btn-semak" onclick="checkAnswers()">SEMAK</button>
+        <button id="btn-reset" onclick="resetGame()">RESET</button>
+    </div>
+
+    <div id="image-section">
+        <div class="image-container" id="image-container">
+            <img id="body-image" src="https://i.postimg.cc/44qR3TLs/JATA-NEGARA-00000.png" alt="Jata Negara">
+            <div class="drop-zone" id="zone-1" data-correct="Perpaduan 13 buah negeri dan Kerajaan Persekutuan"></div>
+            <div class="drop-zone" id="zone-2" data-correct="Mewakili negeri-negeri Melayu Tidak Bersekutu"></div>
+            <div class="drop-zone" id="zone-3" data-correct="Mewakili negeri-negeri Melayu Bersekutu"></div>
+            <div class="drop-zone" id="zone-4" data-correct="Mewakili negeri Melaka"></div>
+            <div class="drop-zone" id="zone-5" data-correct="Bunga kebangsaan"></div>
+        </div>
+    </div>
+
+    <div id="answer-section">
+        <div class="draggable" id="ans-1" data-val="Kepala">Perpaduan 13 buah negeri dan Kerajaan Persekutuan</div>
+        <div class="draggable" id="ans-2" data-val="Tangan">Mewakili negeri-negeri Melayu Tidak Bersekutu</div>
+        <div class="draggable" id="ans-3" data-val="Kaki">Mewakili negeri Melaka</div>
+        <div class="draggable" id="ans-4" data-val="Kaki">Mewakili negeri-negeri Melayu Bersekutu</div>
+        <div class="draggable" id="ans-5" data-val="Tangan">Bunga kebangsaan</div>
+    </div>
+
+</div>
+
+<script>
+    let activeElement = null;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    // Saizkan bekas mengikut nisbah gambar sebenar dan ruang skrin yang tersedia.
+    const bodyImage = document.getElementById('body-image');
+    const imageContainer = document.getElementById('image-container');
+    const imageSection = document.getElementById('image-section');
+
+    function fitImageContainer() {
+        if (!bodyImage || !imageContainer || !imageSection) return;
+        const naturalWidth = bodyImage.naturalWidth || 3;
+        const naturalHeight = bodyImage.naturalHeight || 4;
+        const availableWidth = imageSection.clientWidth * 0.96;
+        const availableHeight = imageSection.clientHeight * 0.96;
+        const scale = Math.min(
+            availableWidth / naturalWidth,
+            availableHeight / naturalHeight
+        );
+        imageContainer.style.width = Math.max(1, naturalWidth * scale) + 'px';
+        imageContainer.style.height = Math.max(1, naturalHeight * scale) + 'px';
+    }
+
+    if (bodyImage.complete) {
+        fitImageContainer();
+    } else {
+        bodyImage.addEventListener('load', fitImageContainer, { once: true });
+    }
+    window.addEventListener('resize', fitImageContainer);
+    if ('ResizeObserver' in window && imageSection) {
+        new ResizeObserver(fitImageContainer).observe(imageSection);
+    }
+
+    function startGame() {
+		const nama = document.getElementById('input-nama').value.trim().toUpperCase(); 
+		const kelas = document.getElementById('input-kelas').value.trim().toUpperCase();
+
+        if (!nama || !kelas) {
+            alert("Sila isi nama dan kelas!");
+            return;
+        }
+
+        document.getElementById('display-nama').innerText = nama;
+        document.getElementById('display-kelas').innerText = kelas;
+        document.getElementById('entry-screen').style.display = 'none';
+        document.getElementById('game-screen').style.display = 'flex';
+        requestAnimationFrame(fitImageContainer);
+    }
+
+    function resetGame() {
+        // Kosongkan semua kotak dan pulangkan semua jawapan ke bahagian pilihan.
+        dropZones.forEach(zone => {
+            zone.innerText = '';
+            delete zone.dataset.occupiedId;
+            zone.classList.remove('correct', 'incorrect');
+        });
+
+        draggables.forEach(el => {
+            el.style.display = '';
+            resetElementPosition(el);
+            document.getElementById('answer-section').appendChild(el);
+        });
+    }
+
+    const draggables = document.querySelectorAll('.draggable');
+    const dropZones = document.querySelectorAll('.drop-zone');
+
+    draggables.forEach(el => {
+        el.addEventListener('pointerdown', onPointerDown);
+    });
+
+    window.addEventListener('pointermove', onPointerMove);
+    window.addEventListener('pointerup', onPointerUp);
+
+    function onPointerDown(e) {
+        activeElement = e.target;
+        if (!activeElement.classList.contains('draggable')) return;
+
+        activeHTML = activeElement;
+        activeElement.classList.add('dragging');
+        const rect = activeElement.getBoundingClientRect();
+        offsetX = e.clientX - rect.left;
+        offsetY = e.clientY - rect.top;
+        
+        activeElement.style.position = 'fixed';
+        activeElement.style.zIndex = '1000';
+        moveAt(e.clientX, e.clientY);
+    }
+
+    function onPointerMove(e) {
+        if (!activeElement) return;
+        moveAt(e.clientX, e.clientY);
+    }
+
+    function moveAt(x, y) {
+        activeElement.style.left = (x - offsetX) + 'px';
+        activeElement.style.top = (y - offsetY) + 'px';
+    }
+
+    function onPointerUp(e) {
+        if (!activeElement) return;
+
+        activeElement.style.visibility = 'hidden';
+        const dropTarget = document.elementFromPoint(e.clientX, e.clientY);
+        activeElement.style.visibility = 'visible';
+
+        const zone = dropTarget ? dropTarget.closest('.drop-zone') : null;
+
+        if (zone) {
+            // Jika kotak sudah ada jawapan, pulangkan jawapan lama ke ruang pilihan.
+            const previousAnswerId = zone.dataset.occupiedId;
+            if (previousAnswerId) {
+                const previousAnswer = document.getElementById(previousAnswerId);
+                if (previousAnswer) {
+                    previousAnswer.style.display = '';
+                    resetElementPosition(previousAnswer);
+                    document.getElementById('answer-section').appendChild(previousAnswer);
+                }
+            }
+
+            // Letakkan jawapan baharu dalam kotak ini.
+            zone.innerText = activeElement.innerText;
+            zone.dataset.occupiedId = activeElement.id;
+            zone.classList.remove('correct', 'incorrect');
+            activeElement.style.display = 'none';
+        } else {
+            resetElementPosition(activeElement);
+        }
+
+        activeElement.classList.remove('dragging');
+        activeElement = null;
+    }
+
+    function resetElementPosition(el) {
+        el.style.position = 'static';
+        el.style.left = 'auto';
+        el.style.top = 'auto';
+        el.style.zIndex = '10';
+    }
+
+    function checkAnswers() {
+        let score = 0;
+        const totalZones = dropZones.length;
+        let filledZones = 0;
+
+        dropZones.forEach(zone => {
+            const correctVal = (zone.dataset.correct || "").trim();
+            const currentVal = zone.innerText.trim();
+
+            if (currentVal !== "") {
+                filledZones++;
+                const isCorrect = currentVal === correctVal;
+
+                if (isCorrect) {
+                    zone.classList.add('correct');
+                    zone.classList.remove('incorrect');
+                    score++;
+                } else {
+                    zone.classList.add('incorrect');
+                    zone.classList.remove('correct');
+                }
+            } else {
+                zone.classList.remove('correct', 'incorrect');
+            }
+        });
+
+        if (filledZones === 0) {
+            alert("Sila letakkan jawapan ke dalam kotak dahulu!");
+            return;
+        }
+
+        const nama = document.getElementById('display-nama').innerText;
+        const kelas = document.getElementById('display-kelas').innerText;
+        alert(`Keputusan: ${nama} \nSkor: ${score} / ${totalZones}\nStatus: ${score === totalZones ? 'Hebat! 🎉' : 'Cuba lagi! 💪'}`);
+    }
+</script>
+
+</body>
+</html>
